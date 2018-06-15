@@ -92,14 +92,13 @@ public class DocumentUtil {
                 .collect(Collectors.toList());
     }
 
-    public static DocumentResponseModel setResponseData(DocumentEntity document, int status) {
+    public static DocumentResponseModel setResponseData(DocumentEntity document) {
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         String modifyDate = dateFormat.format(document.getModifiedDate());
 
         DocumentResponseModel model = new DocumentResponseModel();
-        boolean success = "200".equals(status) ? true : false;
-        model.setSuccess(success);
+        model.setSuccess(true);
         model.setFileId(document.getId());
         model.setModifiedDate(modifyDate);
         model.setFileSize(document.getSize());

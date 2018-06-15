@@ -50,7 +50,7 @@ public class DocumentController {
             DocumentResponseModel model = new DocumentResponseModel();
 
             // 检查文件类型
-            if (!DocumentCheck.checkImage(file.getOriginalFilename())) {
+            if (!DocumentCheck.checkFiles(file.getOriginalFilename())) {
                 model.setSuccess(false);
                 model.setMessage(ErrorCode.FILE_TYPE_ERROR.MESSAGE);
                 responseModels.add(model);
@@ -138,18 +138,18 @@ public class DocumentController {
     }
 
     @DeleteMapping("/{documentId}")
-    public String deleteDocumentById(@PathVariable("documentId") String documentId) {
+    public DocumentResponseModel deleteDocumentById(@PathVariable("documentId") String documentId) {
         return documentService.deleteDocumentByDocumentId(documentId);
     }
 
     @PutMapping("")
-    public String putDocumentById(@RequestParam("documentId") String documentId,
+    public DocumentResponseModel putDocumentById(@RequestParam("documentId") String documentId,
                                   @RequestParam("fileName") String fileName) {
         return documentService.updateDocument(documentId, fileName);
     }
 
     @GetMapping("/file/{fileId}")
-    public void downloadDocument(@PathVariable("fileId") String fileId, HttpServletResponse response) throws IOException {
-        documentService.downloadFile(fileId, response);
+    public DocumentResponseModel downloadDocument(@PathVariable("fileId") String fileId, HttpServletResponse response) throws IOException {
+        return documentService.downloadFile(fileId, response);
     }
 }

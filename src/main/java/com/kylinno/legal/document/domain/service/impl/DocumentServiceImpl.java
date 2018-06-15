@@ -102,7 +102,7 @@ public class DocumentServiceImpl implements DocumentService {
         DocumentEntity documentEntity = saveFileInfo(document);
         documentOperatorLoggerUtil
                 .setDocumentLoggerData(documentEntity.getUserId(), documentEntity.getId(), "Save file!");
-        model = DocumentUtil.setResponseData(documentEntity, status);
+        model = DocumentUtil.setResponseData(documentEntity);
         return model;
     }
 
@@ -115,8 +115,8 @@ public class DocumentServiceImpl implements DocumentService {
         for (int i = 0; i < resultSize; i++) {
             DocumentEntity document = resultDocuments.get(i);
 
-            if(document.getDelete() == false) {
-                DocumentResponseModel model = DocumentUtil.setResponseData(document, 200);
+            if (document.getDelete() == false) {
+                DocumentResponseModel model = DocumentUtil.setResponseData(document);
                 documentOperatorLoggerUtil
                         .setDocumentLoggerData(document.getUserId(), document.getId(), "Find file!");
                 responseModels.add(model);
@@ -129,45 +129,60 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public DocumentResponseModel fetchDocumentByDocumentId(String documentId) {
         DocumentEntity document = documentRepository.findById(documentId);
+
+        if (document == null) {
+            return new DocumentResponseModel(false, "No found file!");
+        }
+
         documentOperatorLoggerUtil
                 .setDocumentLoggerData(document.getUserId(), document.getId(), "Find file!");
-        return DocumentUtil.setResponseData(document, 200);
+        return DocumentUtil.setResponseData(document);
     }
 
     @Override
-    public String deleteDocumentByDocumentId(String documentId) {
-        Optional<DocumentEntity> documentOptional = Optional.of(documentRepository.findById(documentId));
-        DocumentEntity document = documentOptional.orElse(null);
+    public DocumentResponseModel deleteDocumentByDocumentId(String documentId) {
+        DocumentEntity document = documentRepository.findById(documentId);
+
+        if (document == null) {
+            return new DocumentResponseModel(false, "No found file!");
+        }
+
         document.setDelete(true);
-        documentRepository.save(document);
+        document = documentRepository.save(document);
         documentOperatorLoggerUtil
                 .setDocumentLoggerData(document.getUserId(), document.getId(), "Delete file!");
-        return "200";
-
+        return DocumentUtil.setResponseData(document);
     }
 
     @Override
-    public String updateDocument(String documentId, String newFileName) {
-        Optional<DocumentEntity> documentOptional = Optional.of(documentRepository.findById(documentId));
-        DocumentEntity document = documentOptional.orElse(null);
+    public DocumentResponseModel updateDocument(String documentId, String newFileName) {
+        DocumentEntity document = documentRepository.findById(documentId);
+
+        if (document == null) {
+            return new DocumentResponseModel(false, "No found file!");
+        }
 
         String originalFileName = document.getFileName();
         int index = originalFileName.lastIndexOf(".");
         String suffix = originalFileName.substring(index, originalFileName.length());
         newFileName += suffix;
         document.setFileName(newFileName);
-        documentRepository.save(document);
+        document = documentRepository.save(document);
         documentOperatorLoggerUtil
                 .setDocumentLoggerData(document.getUserId(), document.getId(), "Update file name!");
-        return "200";
+        return DocumentUtil.setResponseData(document);
 
     }
 
     @Override
-    public void downloadFile(String fileId, HttpServletResponse response) throws IOException {
-        Optional<DocumentEntity> documentOptional = Optional.of(documentRepository.findById(fileId));
-        DocumentEntity document = documentOptional.orElse(null);
+    public DocumentResponseModel downloadFile(String fileId, HttpServletResponse response) throws IOException {
+        DocumentEntity document = documentRepository.findById(fileId);
 
-        FastDFSClient.downFile(document.getGroupName(), document.getFileName(),document.getRemoteFileName(), response.getOutputStream(), response);
+        if (document == null) {
+            return new DocumentResponseModel(false, "No found file!");
+        }
+
+        FastDFSClient.downFile(document.getGroupName(), document.getFileName(), document.getRemoteFileName(), response.getOutputStream(), response);
+        return DocumentUtil.setResponseData(document);
     }
 }

@@ -78,6 +78,15 @@ public class DocumentCheck {
     }
 
     /**
+     * Checked file type.
+     * @param filename
+     * @return
+     */
+    public static boolean checkFiles(String filename){
+        return checkFile(null, filename);
+    }
+
+    /**
      * Checked image type.
      * @param types Default image type: ['png', 'gif', 'jpeg', 'jpg', 'bmp', 'ico']
      * @param filename
@@ -87,6 +96,20 @@ public class DocumentCheck {
         List<String> checkTypes = types;
         if(types == null || types.size() == 0){
             checkTypes = TYPE_IMAGE;
+        }
+
+        return checkType(checkTypes, filename);
+    }
+
+    /**
+     * Checked file type.
+     * @param filename
+     * @return
+     */
+    public static boolean checkFile(List<String> types, String filename){
+        List<String> checkTypes = types;
+        if(types == null || types.size() == 0){
+            checkTypes = TYPE_ALL_FILES;
         }
 
         return checkType(checkTypes, filename);

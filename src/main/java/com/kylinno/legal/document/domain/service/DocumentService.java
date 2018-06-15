@@ -45,7 +45,7 @@ public interface DocumentService {
      * @param documentId
      * @return Deleted status.
      */
-    String deleteDocumentByDocumentId(String documentId);
+    DocumentResponseModel deleteDocumentByDocumentId(String documentId);
 
     /**
      * According to document id, changed document name.
@@ -54,12 +54,12 @@ public interface DocumentService {
      * @param newFileName
      * @return Updated status.
      */
-    String updateDocument(String documentId, String newFileName);
+    DocumentResponseModel updateDocument(String documentId, String newFileName);
 
     /**
      * According to file id, download file.
      *
      * @param fileId
      */
-    void downloadFile(String fileId, HttpServletResponse response) throws IOException;
+    DocumentResponseModel downloadFile(String fileId, HttpServletResponse response) throws IOException;
 }
