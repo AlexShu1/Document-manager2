@@ -1,0 +1,18 @@
+<!DOCTYPE HTML>
+<html>
+<body>
+
+<h1>Spring Boot file upload example</h1>
+
+<!--webkitdirectory="webkitdirectory"-->
+<form method="POST" action="http://localhost:42100/document" enctype="multipart/form-data">
+    <input type="file" name="file" multiple="multiple" /><br/><br/>
+    <input type="submit" value="Submit" />
+</form>
+
+
+<form method="GET" action="http://localhost:42100/document/file/5b237a251f50881480376038">
+    <input type="submit" value="download" />
+</form>
+</body>
+</html>
